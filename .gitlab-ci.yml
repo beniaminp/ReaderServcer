@@ -1,9 +1,10 @@
-image: maven:amazoncorretto
+image: parrotstream/ubuntu-java:latest
 pages:
   stage: deploy
   script:
-  - yum install -y openssh-clients
-  - yum --enablerepo=epel -y install sshpass
+  - apt install maven
+  - apt install openssh-client
+  - apt install sshpass
   - mvn clean install
   - sshpass -p "carol1234" scp -r ebook-0.0.1-SNAPSHOT.jar beniaminp@vps658548.ovh.net:/home/beniaminp/sublime/
   artifacts:
