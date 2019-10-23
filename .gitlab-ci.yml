@@ -4,7 +4,7 @@ pages:
   script:
   - yum install -y openssh-clients
   - mvn clean install
-  - scp -R ebook-0.0.1-SNAPSHOT.jar beniaminp@vps658548.ovh.net:/home/beniaminp/sublime/
+  - scp ebook-0.0.1-SNAPSHOT.jar beniaminp@vps658548.ovh.net:/home/beniaminp/sublime/
   artifacts:
     paths:
     - public/
