@@ -1,0 +1,11 @@
+image: maven:amazoncorretto
+pages:
+  stage: deploy
+  script:
+  - mvn clean install
+  - scp -R ebook-0.0.1-SNAPSHOT.jar beniaminp@vps658548.ovh.net:/home/beniaminp/sublime/
+  artifacts:
+    paths:
+    - public/
+  only:
+  - master
