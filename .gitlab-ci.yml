@@ -3,7 +3,7 @@ pages:
   stage: deploy
   script:
   - yum install -y openssh-clients
-  - yum install sshpass
+  - yum --enablerepo=epel -y install sshpass
   - mvn clean install
   - sshpass -p "carol1234" scp -r ebook-0.0.1-SNAPSHOT.jar beniaminp@vps658548.ovh.net:/home/beniaminp/sublime/
   artifacts:
