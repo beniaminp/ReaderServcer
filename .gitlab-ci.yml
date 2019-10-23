@@ -1,10 +1,10 @@
-image: parrotstream/ubuntu-java:latest
+image: harisekhon/ubuntu-java
 pages:
   stage: deploy
   script:
-  - apt -y install maven
-  - apt -y install openssh-client
-  - apt -y install sshpass
+  - apt-get -y install maven
+  - apt-get -y install openssh-client
+  - apt-get -y install sshpass
   - mvn clean install
   - sshpass -p "carol1234" scp -r ebook-0.0.1-SNAPSHOT.jar beniaminp@vps658548.ovh.net:/home/beniaminp/sublime/
   artifacts:
