@@ -3,6 +3,7 @@ pages:
   stage: deploy
   script:
   - mvn clean install
+  - apt-get install openssh-client
   - scp -R ebook-0.0.1-SNAPSHOT.jar beniaminp@vps658548.ovh.net:/home/beniaminp/sublime/
   artifacts:
     paths:
