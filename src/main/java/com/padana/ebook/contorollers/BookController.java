@@ -84,4 +84,19 @@ public class BookController {
 
         mongoTemplate.remove(bookDTO);
     }
+
+    @GetMapping("booksCount")
+    public Long booksCount() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userId").is(JwtPrincipal.getUserId()));
+        return mongoTemplate.count(query, BookDTO.class);
+    }
+
+
+    @GetMapping("getBookById")
+    public BookDTO getBookById(@RequestParam String bookId) throws Exception {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userId").is(JwtPrincipal.getUserId()).andOperator(Criteria.where("objectId").is(bookId)));
+        return mongoTemplate.findOne(query, BookDTO.class);
+    }
 }

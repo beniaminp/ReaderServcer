@@ -1,6 +1,7 @@
 package com.padana.ebook.contorollers;
 
 import com.padana.ebook.config.jwt.JwtPrincipal;
+import com.padana.ebook.dto.BookDTO;
 import com.padana.ebook.dto.ConnectionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,11 +20,7 @@ public class ConnectionController {
 
     @GetMapping("getMyConnections")
     public List<ConnectionDTO> getMyConnections() throws Exception {
-        Query query = new Query();
-        Criteria criteria = new Criteria();
-        criteria.orOperator(Criteria.where("secondUserId").is(JwtPrincipal.getUserId()), Criteria.where("firstUserId").is(JwtPrincipal.getUserId()))
-                .andOperator(Criteria.where("secondUserAccepted").is(true), Criteria.where("firstUserAccepted").is(true));
-        query.addCriteria(criteria);
+        Query query = getConnectionsQuery();
         return mongoTemplate.find(query, ConnectionDTO.class);
 
     }
@@ -54,5 +51,19 @@ public class ConnectionController {
         Update update = new Update();
         update.set("secondUserAccepted", true);
         mongoTemplate.updateFirst(query, update, ConnectionDTO.class);
+    }
+
+    @GetMapping("connectionsCount")
+    public Long connectionsCount() {
+        return mongoTemplate.count(getConnectionsQuery(), ConnectionDTO.class);
+    }
+
+    private Query getConnectionsQuery() {
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+        criteria.orOperator(Criteria.where("secondUserId").is(JwtPrincipal.getUserId()), Criteria.where("firstUserId").is(JwtPrincipal.getUserId()))
+                .andOperator(Criteria.where("secondUserAccepted").is(true), Criteria.where("firstUserAccepted").is(true));
+        query.addCriteria(criteria);
+        return query;
     }
 }

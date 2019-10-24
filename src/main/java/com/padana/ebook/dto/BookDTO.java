@@ -9,10 +9,10 @@ public class BookDTO {
     @Id
     public String objectId;
 
+    public String userId;
     public String title;
     public String uniqueIdentifier;
     public String fileUrl;
-    public String userId;
     // file infos
     public String fileId;
     public String fileName;
