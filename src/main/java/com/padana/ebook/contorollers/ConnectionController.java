@@ -69,7 +69,7 @@ public class ConnectionController {
 
         return mongoTemplate.insert(sharedBooksDTO);
     }
-gi
+
     @DeleteMapping("deleteSharedBook/{bookId}")
     public void deleteSharedBook(@PathVariable String sharedBookId) throws Exception {
         Query query = new Query();
