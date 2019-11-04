@@ -18,4 +18,5 @@ public class BookDTO {
     public String fileName;
     public Object bookContent;
     public String fileUrlName;
+    public String lastReadCfi;
 }

@@ -1,8 +1,8 @@
 package com.padana.ebook.contorollers;
 
 import com.padana.ebook.config.jwt.JwtPrincipal;
-import com.padana.ebook.dto.BookDTO;
 import com.padana.ebook.dto.ConnectionDTO;
+import com.padana.ebook.dto.SharedBooksDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -56,6 +56,26 @@ public class ConnectionController {
     @GetMapping("connectionsCount")
     public Long connectionsCount() {
         return mongoTemplate.count(getConnectionsQuery(), ConnectionDTO.class);
+    }
+
+    @PutMapping(value = "shareBookWithUser/{userId}/{bookId}/{daysToShare}")
+    public SharedBooksDTO shareBookWithUser(@PathVariable String userId, @PathVariable String bookId, @PathVariable String daysToShare) {
+        SharedBooksDTO sharedBooksDTO = new SharedBooksDTO();
+        sharedBooksDTO.fromUser = JwtPrincipal.getUserId();
+        sharedBooksDTO.toUser = userId;
+        sharedBooksDTO.bookId = bookId;
+        sharedBooksDTO.daysToShare = daysToShare;
+        sharedBooksDTO.startDate = System.currentTimeMillis();
+
+        return mongoTemplate.insert(sharedBooksDTO);
+    }
+gi
+    @DeleteMapping("deleteSharedBook/{bookId}")
+    public void deleteSharedBook(@PathVariable String sharedBookId) throws Exception {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("objectId").is(sharedBookId));
+        SharedBooksDTO sharedBookDTO = mongoTemplate.findOne(query, SharedBooksDTO.class);
+        mongoTemplate.remove(sharedBookDTO);
     }
 
     private Query getConnectionsQuery() {

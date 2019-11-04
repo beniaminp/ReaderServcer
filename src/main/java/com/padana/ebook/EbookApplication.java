@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan("com.padana.ebook")
 public class EbookApplication {
     public static void main(String[] args) {
+        System.setProperty("java.net.useSystemProxies", "true");
         SpringApplication.run(EbookApplication.class, args);
     }
 

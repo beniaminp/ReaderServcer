@@ -2,11 +2,13 @@ package com.padana.ebook.contorollers;
 
 import com.padana.ebook.config.jwt.JwtPrincipal;
 import com.padana.ebook.dto.BookDTO;
+import com.padana.ebook.dto.SharedBooksDTO;
 import com.padana.ebook.services.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("book-controller")
@@ -69,6 +72,17 @@ public class BookController {
         return mongoTemplate.find(query, BookDTO.class);
     }
 
+    @GetMapping("getSharedWithMeBooks")
+    public List<BookDTO> getSharedWithMeBooks() throws Exception {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("toUser").is(JwtPrincipal.getUserId()));
+        List<SharedBooksDTO> sharedBooksDTOList = mongoTemplate.find(query, SharedBooksDTO.class);
+        List<String> bookIds = sharedBooksDTOList.stream().map(sharedBooksDTO -> sharedBooksDTO.bookId).collect(Collectors.toList());
+        query = new Query();
+        query.addCriteria(Criteria.where("objectId").in(bookIds));
+        return mongoTemplate.find(query, BookDTO.class);
+    }
+
     @PostMapping(value = "/addBook")
     public BookDTO addBook(@RequestBody BookDTO bookDTO) throws Exception {
         return mongoTemplate.insert(bookDTO);
@@ -92,11 +106,19 @@ public class BookController {
         return mongoTemplate.count(query, BookDTO.class);
     }
 
-
     @GetMapping("getBookById")
     public BookDTO getBookById(@RequestParam String bookId) throws Exception {
         Query query = new Query();
         query.addCriteria(Criteria.where("userId").is(JwtPrincipal.getUserId()).andOperator(Criteria.where("objectId").is(bookId)));
         return mongoTemplate.findOne(query, BookDTO.class);
+    }
+
+    @PutMapping(value = "updateLastCfi/{bookId}")
+    public void updateLastCfi(@PathVariable String bookId, @RequestParam String lastCfi) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userId").is(JwtPrincipal.getUserId()).andOperator(Criteria.where("objectId").is(bookId)));
+        Update update = new Update();
+        update.set("lastReadCfi", lastCfi);
+        mongoTemplate.updateFirst(query, update, BookDTO.class);
     }
 }
