@@ -1,6 +1,7 @@
 package com.padana.ebook.dto;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("shared-books")
@@ -17,4 +18,7 @@ public class SharedBooksDTO {
     public String daysToShare;
 
     public Long startDate;
+
+    @Transient
+    public BookDTO bookDTO;
 }

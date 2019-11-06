@@ -18,7 +18,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("book-controller")
@@ -73,14 +74,21 @@ public class BookController {
     }
 
     @GetMapping("getSharedWithMeBooks")
-    public List<BookDTO> getSharedWithMeBooks() throws Exception {
+    public List<SharedBooksDTO> getSharedWithMeBooks() throws Exception {
         Query query = new Query();
         query.addCriteria(Criteria.where("toUser").is(JwtPrincipal.getUserId()));
         List<SharedBooksDTO> sharedBooksDTOList = mongoTemplate.find(query, SharedBooksDTO.class);
-        List<String> bookIds = sharedBooksDTOList.stream().map(sharedBooksDTO -> sharedBooksDTO.bookId).collect(Collectors.toList());
+        List<String> bookIds = sharedBooksDTOList.stream().map(sharedBooksDTO -> sharedBooksDTO.bookId).collect(toList());
         query = new Query();
         query.addCriteria(Criteria.where("objectId").in(bookIds));
-        return mongoTemplate.find(query, BookDTO.class);
+        List<BookDTO> bookDTOList = mongoTemplate.find(query, BookDTO.class);
+        if (sharedBooksDTOList != null && sharedBooksDTOList.size() > 0) {
+            sharedBooksDTOList.forEach(sharedBooksDTO -> {
+                sharedBooksDTO.bookDTO = bookDTOList.stream()
+                        .filter(bookDTO -> bookDTO.objectId.equals(sharedBooksDTO.bookId)).collect(toList()).get(0);
+            });
+        }
+        return sharedBooksDTOList;
     }
 
     @PostMapping(value = "/addBook")
