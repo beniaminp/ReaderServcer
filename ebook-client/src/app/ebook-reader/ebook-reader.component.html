@@ -1,0 +1,45 @@
+<ion-header #toolbarHeader *ngIf="bookDTO != null && showHideToolbar" style="z-index: 99999;position: absolute;">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+            <ion-button (click)="goBack()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>{{bookDTO.title}}</ion-title>
+        <ion-buttons slot="end" style="margin-right: 1%;">
+            <ion-button (click)="setUnsetBookmark()" style="margin-right: 2%;">
+                <ion-icon name="bookmark"
+                          [style.opacity]="isBookmarkSet ? '1' : '0.2'"></ion-icon>
+            </ion-button>
+            <ion-icon name="menu" (click)="presentPopover($event)"></ion-icon>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<main role="main" #mainContent id="main">
+    <div id="book"></div>
+</main>
+
+
+<footer class="footer" #footer>
+    <ion-toolbar>
+        <ion-row>
+            <ion-col width-18 style="text-align: left" *ngIf="showNavigationControl">
+                <ion-icon name="arrow-dropleft-circle" (click)="move(0)" size="large"></ion-icon>
+            </ion-col>
+            <ion-col width-15 style="text-align: center">
+                {{progress}}%
+            </ion-col>
+            <ion-col width-33 style="text-align: center">
+                <ion-icon name="radio-button-on" size="large" (click)="showHideToolbarClick()"></ion-icon>
+            </ion-col>
+            <ion-col width-15 style="text-align: center">
+               <!-- {{currentPage}} of {{totalPageNo}}-->
+            </ion-col>
+            <ion-col width-18 style="text-align: right" *ngIf="showNavigationControl">
+                <ion-icon name="arrow-dropright-circle" (click)="move(1)" size="large"></ion-icon>
+            </ion-col>
+        </ion-row>
+    </ion-toolbar>
+</footer>

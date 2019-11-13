@@ -1,0 +1,17 @@
+<div *ngIf="bookDTO != null">
+    <ion-header>
+        <ion-toolbar translucent>
+            <ion-title>{{bookDTO.title}}</ion-title>
+            <ion-buttons slot="end">
+                <ion-button (click)="viewBookMarks()">
+                    <ion-icon name="bookmark" style="float: right;"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+        </ion-toolbar>
+    </ion-header>
+    <ion-list *ngIf="ePub && ePub.navigation">
+        <ion-item *ngFor="let chapter of ePub.navigation.toc" (click)="goToChapter(chapter)" menuClose>
+            <ion-label>{{chapter.label}}</ion-label>
+        </ion-item>
+    </ion-list>
+</div>

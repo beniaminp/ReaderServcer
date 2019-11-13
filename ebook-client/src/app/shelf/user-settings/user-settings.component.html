@@ -1,0 +1,11 @@
+<ion-list *ngIf="userDTO">
+    <ion-item>
+        <ion-label (click)="logOut()">
+            Log Out
+        </ion-label>
+    </ion-item>
+    <ion-item>
+        <ion-label>Open Last</ion-label>
+        <ion-checkbox slot="end" color="danger"  [checked]="userDTO.goToLastRead" (click)="setOpenLastRead()"></ion-checkbox>
+    </ion-item>
+</ion-list>

@@ -1,0 +1,21 @@
+<ion-header>
+    <ion-toolbar translucent>
+        <ion-title>My Books menu</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-list>
+    <ion-item>
+        <label for="files">Add Books</label>
+        <input type="file" ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)"
+               multiple id="files" style="display: none">
+    </ion-item>
+    <ion-item>
+        <ion-label (click)="openPeople()">People</ion-label>
+    </ion-item>
+    <ion-item>
+        <ion-label (click)="openPendingInvites()">Pending invites</ion-label>
+    </ion-item>
+    <ion-item>
+        <ion-label (click)="openMyConnections()">My Connections</ion-label>
+    </ion-item>
+</ion-list>
