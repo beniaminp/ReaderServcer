@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableScheduling
 public class EbookApplication {
     public static void main(String[] args) {
-        System.setProperty("java.net.useSystemProxies", "true");
+        // System.setProperty("java.net.useSystemProxies", "true");
         SpringApplication.run(EbookApplication.class, args);
     }
 

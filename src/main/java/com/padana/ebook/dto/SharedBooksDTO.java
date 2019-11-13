@@ -19,6 +19,8 @@ public class SharedBooksDTO {
 
     public Long startDate;
 
+    public Boolean expired;
+
     @Transient
     public BookDTO bookDTO;
 }
