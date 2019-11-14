@@ -54,13 +54,6 @@
             <version>1.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.aspose/aspose-pdf -->
-        <dependency>
-            <groupId>com.aspose</groupId>
-            <artifactId>aspose-pdf</artifactId>
-            <version>19.10</version>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -80,11 +73,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <repository>
-        <id>AsposeJavaAPI</id>
-        <name>Aspose Java API</name>
-        <url>https://repository.aspose.com/repo/</url>
-    </repository>
 
 </project>
