@@ -39,6 +39,7 @@ export class MyBooksMenuComponent implements OnInit {
                             this.presentAlert(file.name).then();
                         } else {
                             this.uploadService.readFile(file);
+                            this.filesArray.splice(this.filesArray.indexOf(file), 1);
                         }
                     });
                 }
