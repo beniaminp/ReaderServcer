@@ -6,13 +6,13 @@ import {UserDTO} from "../models/UserDTO";
 import {AppStorageService} from "../er-local-storage/app-storage.service";
 import {BookmarkDTO} from "../ebook-reader/dto/BookmarkDTO";
 import {ConnectionDTO} from "../models/ConnectionDTO";
-import {environment} from "../../environments/environment";
+import {AppSettings} from "../app-settings";
 
 @Injectable({
     providedIn: 'root'
 })
 export class HttpParseService {
-    public parseURL = 'http://' + window.location.hostname + ':8080/';
+    public parseURL = AppSettings.BACKEND_URL();
 
     // public parseURL = 'http://vps658548.ovh.net:8080/';
 

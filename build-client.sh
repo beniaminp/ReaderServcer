@@ -1,4 +1,7 @@
 cd ebook-client
+rm -rf src/app/app-settings.ts
+mv src/app/app-settings-prod.ts src/app/app-settings.ts
+
 npm install
 ionic cordova platform rm browser
 ionic cordova platform add browser
