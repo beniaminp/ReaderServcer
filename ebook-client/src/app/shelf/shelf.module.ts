@@ -12,6 +12,7 @@ import {UserSettingsComponent} from "./user-settings/user-settings.component";
 import {BookPopoverComponent} from "./book-popover/book-popover.component";
 import {SocialModule} from "../social/social.module";
 import {ShareBookComponent} from "./share-book/share-book.component";
+import {AuthorsListComponent} from "./lists/authors-list/authors-list.component";
 
 const routes: Routes = [
     {
@@ -34,13 +35,15 @@ const routes: Routes = [
         MyBooksMenuComponent,
         UserSettingsComponent,
         BookPopoverComponent,
-        ShareBookComponent
+        ShareBookComponent,
+        AuthorsListComponent
     ],
     exports: [
         MyBooksMenuComponent,
         UserSettingsComponent,
         BookPopoverComponent,
-        ShareBookComponent
+        ShareBookComponent,
+        AuthorsListComponent
     ],
     entryComponents: [
         UserSettingsComponent,

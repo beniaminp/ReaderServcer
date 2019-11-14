@@ -43,5 +43,5 @@
             <ion-icon name="menu" (click)="showBookPopover($event, book)"></ion-icon>
         </ion-item>
     </ion-list>
-    <app-authors-list *ngIf="showAuthors"></app-authors-list>
+    <app-authors-list *ngIf="showAuthors" [books]="books"></app-authors-list>
 </ion-content>
