@@ -29,6 +29,7 @@ export class ShelfPage implements OnInit {
     public userDTO: UserDTO;
     public viewFreeBooks = false;
     public showBooks = 0;
+    public showAuthors = false;
 
     public areSharedBooks = false;
     public sharedBooks: SharedBookDTO[];
@@ -144,14 +145,19 @@ export class ShelfPage implements OnInit {
             this.getBooks();
             this.showFavorites = false;
             this.viewFreeBooks = false;
+            this.showAuthors = false;
         } else if (this.showBooks == 1) {
             this.filteredBooks = this.books.filter(book => this.favoritesBooks.includes(book.objectId));
             this.showFavorites = true;
             this.viewFreeBooks = false;
+            this.showAuthors = false;
         } else if (this.showBooks == 2) {
             this.showFavorites = false;
             this.viewFreeBooks = false;
+            this.showAuthors = false;
             this.getSharedWithMeBooks();
+        } else if(this.showBooks == 3){
+            this.showAuthors = true;
         }
     }
 
@@ -179,12 +185,14 @@ export class ShelfPage implements OnInit {
         if (this.books != null && this.books.length > 1) {
             this.filteredBooks = this.books;
             this.areSharedBooks = false;
+            this.showAuthors = false;
             return;
         }
         if (this.appStorageService.getBooks().length > 0) {
             this.books = this.appStorageService.getBooks();
             this.filteredBooks = this.books;
             this.areSharedBooks = false;
+            this.showAuthors = false;
             return;
         }
         this.loadingService.showLoader();
@@ -193,6 +201,7 @@ export class ShelfPage implements OnInit {
                 this.books = res.sort((a, b) => a.fileName > b.fileName ? 1 : -1);
                 this.filteredBooks = this.books;
                 this.areSharedBooks = false;
+                this.showAuthors = false;
                 this.loadingService.dismissLoader();
             },
             (e) => {
@@ -210,6 +219,7 @@ export class ShelfPage implements OnInit {
                 this.loadingService.dismissLoader();
                 this.sharedBooks = res.sort((a, b) => a.bookDTO.fileName > b.bookDTO.fileName ? 1 : -1);
                 this.areSharedBooks = true;
+                this.showAuthors = false;
             }, (e) => {
                 console.error(e);
                 this.loadingService.dismissLoader();
@@ -225,6 +235,7 @@ export class ShelfPage implements OnInit {
         this.userDTO = null;
         this.viewFreeBooks = false;
         this.areSharedBooks = false;
+        this.showAuthors = false;
         this.sharedBooks = [];
     }
 
