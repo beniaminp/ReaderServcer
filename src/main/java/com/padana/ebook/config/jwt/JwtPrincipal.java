@@ -2,6 +2,7 @@ package com.padana.ebook.config.jwt;
 
 import com.padana.ebook.dto.UserDTO;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -34,6 +35,9 @@ public class JwtPrincipal {
     }
 
     public static String getUserId() {
+        if (getUser() == null) {
+            throw new AuthenticationCredentialsNotFoundException("User not logged in");
+        }
         return getUser().objectId;
     }
 }
