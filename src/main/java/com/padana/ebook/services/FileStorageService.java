@@ -3,6 +3,7 @@ package com.padana.ebook.services;
 import com.google.common.io.ByteSource;
 import com.padana.ebook.config.FileStorageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
