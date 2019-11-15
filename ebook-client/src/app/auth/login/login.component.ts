@@ -30,10 +30,10 @@ export class LoginComponent implements OnInit {
         userDTO.email = form.controls.email.value;
         userDTO.password = form.controls.password.value;
         this.httpParseService.loginUser(userDTO).subscribe(
-            (res: any) => {
+            async (res: any) => {
                 userDTO = res;
                 this.appStorageService.setUserDTO(userDTO);
-                this.httpParseService.initApp();
+                await this.httpParseService.initApp();
 
                 this.loadingService.dismissLoader();
                 this.goToShelf();

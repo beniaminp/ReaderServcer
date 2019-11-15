@@ -3,20 +3,22 @@ import {UserDTO} from "../models/UserDTO";
 import {LocalStorageService} from "angular-2-local-storage";
 import {ConnectionDTO} from "../models/ConnectionDTO";
 import {BookDTO} from "../ebook-reader/dto/BookDTO";
+import {Storage} from '@ionic/storage';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AppStorageService {
 
-    constructor(private localStorageService: LocalStorageService) {
+    constructor(private localStorageService: LocalStorageService,
+                private storage: Storage) {
     }
 
     public setToken(token: string) {
         this.localStorageService.set(STORAGE_DATA.TOKEN, token);
     }
 
-    public getToken() {
+    public getToken(): Promise<string> {
         return this.localStorageService.get(STORAGE_DATA.TOKEN);
     }
 
@@ -94,22 +96,24 @@ export class AppStorageService {
     }
 
     public setBooks(booksDTO: BookDTO[]) {
-        this.localStorageService.set(STORAGE_DATA.BOOKS, booksDTO);
+        this.storage.set(STORAGE_DATA.BOOKS, booksDTO);
     }
 
-    public getBooks(): BookDTO[] {
-        let books: BookDTO[] = this.localStorageService.get(STORAGE_DATA.BOOKS);
-        return books != null ? books : [];
+    public getBooks(): Promise<BookDTO[]> {
+        /* let books: BookDTO[] = this.localStorageService.get(STORAGE_DATA.BOOKS);
+         return books != null ? books : [];*/
+        return this.storage.get(STORAGE_DATA.BOOKS);
     }
 
-    public addBook(bookDTO: BookDTO) {
-        let books = this.getBooks();
+    public async addBook(bookDTO: BookDTO) {
+        let books = await this.getBooks();
         books.push(bookDTO);
         this.setBooks(books);
     }
 
-    public deleteBook(bookDTO: BookDTO) {
-        let books = this.getBooks().splice(this.getBooks().indexOf(bookDTO), 1);
+    public async deleteBook(bookDTO: BookDTO) {
+        let booksStorage = await this.getBooks();
+        let books = booksStorage.splice(booksStorage.indexOf(bookDTO), 1);
         this.setBooks(books);
     }
 

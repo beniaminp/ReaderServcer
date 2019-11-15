@@ -53,7 +53,7 @@ export class ShelfPage implements OnInit {
     }
 
     async ngOnInit() {
-        this.routeSub = this.router.events.subscribe((event) => {
+        this.routeSub = this.router.events.subscribe(async (event) => {
             if (event instanceof NavigationStart) {
                 this.clearAll();
                 this.route.params.subscribe(params => {
@@ -171,9 +171,9 @@ export class ShelfPage implements OnInit {
         return await popover.present();
     }
 
-    private deleteBookLocal(bookDTO: BookDTO) {
+    private async deleteBookLocal(bookDTO: BookDTO) {
         this.appStorageService.deleteBook(bookDTO);
-        this.books = this.appStorageService.getBooks();
+        this.books = await this.appStorageService.getBooks();
         this.filteredBooks = this.books;
     }
 
@@ -188,8 +188,9 @@ export class ShelfPage implements OnInit {
             this.showAuthors = false;
             return;
         }
-        if (this.appStorageService.getBooks().length > 0) {
-            this.books = this.appStorageService.getBooks();
+        let books = await this.appStorageService.getBooks();
+        if (books.length > 0) {
+            this.books = await this.appStorageService.getBooks();
             this.filteredBooks = this.books;
             this.areSharedBooks = false;
             this.showAuthors = false;
@@ -241,11 +242,11 @@ export class ShelfPage implements OnInit {
 
     private initEventListeners() {
         this.menuService.menuEmitter.subscribe(
-            (res) => {
+            async (res) => {
                 switch (res.type) {
                     case MenuEvents.BOOKS_ADDED: {
                         this.appStorageService.addBook(res.value);
-                        this.books = this.appStorageService.getBooks();
+                        this.books = await this.appStorageService.getBooks();
                         this.filteredBooks = this.books;
                         break;
                     }

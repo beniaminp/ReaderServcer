@@ -31,12 +31,15 @@ import {CachingInterceptor} from "./services/cache/caching-interceptor";
         BrowserModule,
         IonicModule.forRoot(),
         AppRoutingModule,
-        IonicStorageModule.forRoot(),
+        IonicStorageModule.forRoot({
+            name: 'ebook_db',
+            driverOrder: ['indexeddb', 'sqlite', 'websql']
+        }),
         EbookReaderModule,
         ShelfPageModule,
         HttpClientModule,
         ServiceWorkerModule.register('ngsw-worker.js', {enabled: true}),
-        ErLocalStorageModule
+        ErLocalStorageModule,
     ],
     providers: [
         StatusBar,

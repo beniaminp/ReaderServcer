@@ -28,8 +28,8 @@ export class HttpParseService {
             username: userDTO.email,
             password: userDTO.password
         }).subscribe(
-            (res: any) => {
-                this.appStorageService.setToken(res.token);
+            async (res: any) => {
+                await this.appStorageService.setToken(res.token);
                 this.httpClient.get(this.parseURL + RestControllers.USER + '/getUser', this.createHttpOptions()).subscribe(
                     (userDTO: UserDTO) => {
                         subject.next(userDTO);
@@ -300,7 +300,7 @@ export class HttpParseService {
         return httpHeaders;
     }
 
-    public initApp() {
+    public async initApp() {
         if (this.appStorageService.getConnections() == null) {
             this.getMyConnections().subscribe(
                 (res: any) => {
@@ -317,8 +317,8 @@ export class HttpParseService {
             );
         } else {
             this.connectionsCount().subscribe(
-                (res: number) => {
-                    if (this.appStorageService.getUserConnections().length != res) {
+                async (res: number) => {
+                    if (await this.appStorageService.getUserConnections().length != res) {
                         this.getMyConnectedUsers().subscribe(
                             (res: any) => {
                                 this.appStorageService.setUserConnections(res as UserDTO[]);
@@ -329,19 +329,20 @@ export class HttpParseService {
             )
         }
 
-        if (this.appStorageService.getBooks() == null) {
+        if (await this.appStorageService.getBooks() == null) {
             this.getBooksForUser().subscribe(
-                (books: BookDTO[]) => {
-                    this.appStorageService.setBooks(books);
+                async (books: BookDTO[]) => {
+                    await this.appStorageService.setBooks(books);
                 }
             )
         } else {
             this.booksCount().subscribe(
-                (res: number) => {
-                    if (this.appStorageService.getBooks().length != res) {
+                async (res: number) => {
+                    let books = await this.appStorageService.getBooks();
+                    if (books.length != res) {
                         this.getBooksForUser().subscribe(
-                            (books: BookDTO[]) => {
-                                this.appStorageService.setBooks(books);
+                            async (books: BookDTO[]) => {
+                                await this.appStorageService.setBooks(books);
                             }
                         )
                     }

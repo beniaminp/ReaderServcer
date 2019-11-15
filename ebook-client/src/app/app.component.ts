@@ -21,12 +21,13 @@ export class AppComponent {
         this.initializeApp();
     }
 
-    initializeApp() {
+    async initializeApp() {
         this.statusBar.styleDefault();
 
-        this.platform.ready().then(() => {
+        this.platform.ready().then(async () => {
             let userDTO = this.appStorageService.getUserDTO();
-            if (userDTO != null && this.appStorageService.getToken() != null) {
+            let token = await this.appStorageService.getToken();
+            if (userDTO != null && token != null) {
                 this.httpParseService.initApp();
                 this.router.navigate(["/shelf"]);
             } else {
