@@ -24,6 +24,24 @@ import {TokenInterceptorService} from "./services/token-interceptor.service";
 import {RequestCache} from "./services/cache/request-cache";
 import {CachingInterceptor} from "./services/cache/caching-interceptor";
 import {DBConfig, NgxIndexedDBModule} from "ngx-indexed-db";
+import {AuthService, AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider} from "angular-6-social-login";
+
+
+export function socialConfigs() {
+    const config = new AuthServiceConfig(
+        [
+            /* {
+                 id: FacebookLoginProvider.PROVIDER_ID,
+                 provider: new FacebookLoginProvider('app -id')
+             },*/
+            {
+                id: GoogleLoginProvider.PROVIDER_ID,
+                provider: new GoogleLoginProvider('812404189923-jbs50fup107t32rc1vbpbb4qr2fj9pd6.apps.googleusercontent.com')
+            }
+        ]
+    );
+    return config;
+}
 
 const dbConfig: DBConfig = {
     name: 'SublimeReader', version: 1, objectStoresMeta: [
@@ -69,7 +87,12 @@ const dbConfig: DBConfig = {
         RequestCache,
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
         File,
-        FileChooser
+        FileChooser,
+        AuthService,
+        {
+            provide: AuthServiceConfig,
+            useFactory: socialConfigs
+        }
     ],
     bootstrap: [AppComponent]
 })

@@ -33,6 +33,7 @@
     "@ionic/angular": "4.9.0",
     "@ionic/storage": "^2.2.0",
     "angular-2-local-storage": "^3.0.2",
+    "angular-6-social-login": "^1.1.1",
     "cordova-android": "^7.1.2",
     "cordova-browser": "6.0.0",
     "cordova-ios": "4.5.5",

@@ -4,9 +4,8 @@ import {Router} from "@angular/router";
 import {UserDTO} from "../../models/UserDTO";
 import {HttpParseService} from "../../services/http-parse.service";
 import {AppStorageService} from "../../er-local-storage/app-storage.service";
-import {LoadingController} from "@ionic/angular";
 import {LoadingService} from "../../services/loading.service";
-import {ConnectionDTO} from "../../models/ConnectionDTO";
+import {AuthService, GoogleLoginProvider} from "angular-6-social-login";
 
 @Component({
     selector: 'app-login',
@@ -18,7 +17,8 @@ export class LoginComponent implements OnInit {
     constructor(private router: Router,
                 public httpParseService: HttpParseService,
                 public appStorageService: AppStorageService,
-                private loadingService: LoadingService) {
+                private loadingService: LoadingService,
+                public OAuth: AuthService) {
     }
 
     ngOnInit() {
@@ -43,6 +43,26 @@ export class LoginComponent implements OnInit {
                 console.error(e);
             }
         );
+    }
+
+    public googleLogin() {
+        this.OAuth.signIn(GoogleLoginProvider.PROVIDER_ID).then(socialusers => {
+            console.log(socialusers);
+            this.httpParseService.socialAuthenticate(socialusers).subscribe(
+                async (res: any) => {
+                    let userDTO = res;
+                    this.appStorageService.setUserDTO(userDTO);
+                    await this.httpParseService.initApp();
+
+                    this.loadingService.dismissLoader();
+                    this.goToShelf();
+
+                }, (e) => {
+                    this.loadingService.dismissLoader();
+                    console.error(e);
+                }
+            );
+        });
     }
 
     public goToRegister() {

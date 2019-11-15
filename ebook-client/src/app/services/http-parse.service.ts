@@ -41,6 +41,28 @@ export class HttpParseService {
         return subject.asObservable();
     }
 
+    public socialAuthenticate(userDTO: any) {
+        var subject = new Subject<UserDTO>();
+
+        let user: any = {};
+        user.username = userDTO.email;
+        user.name = userDTO.name;
+        user.email = userDTO.email;
+        user.password = userDTO.id;
+
+        this.httpClient.post(this.parseURL + RestControllers.AUTH + '/socialAuthenticate', user).subscribe(
+            (res: any) => {
+                this.appStorageService.setToken(res.token);
+                this.httpClient.get(this.parseURL + RestControllers.USER + '/getUser').subscribe(
+                    (userDTO: UserDTO) => {
+                        subject.next(userDTO);
+                    }
+                )
+            }
+        );
+        return subject.asObservable();
+    }
+
     public signUpUser(userDTO: UserDTO) {
         var subject = new Subject<UserDTO>();
 
