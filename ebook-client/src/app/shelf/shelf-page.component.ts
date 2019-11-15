@@ -56,15 +56,18 @@ export class ShelfPage implements OnInit {
         this.routeSub = this.router.events.subscribe(async (event) => {
             if (event instanceof NavigationStart) {
                 this.clearAll();
-                this.route.params.subscribe(params => {
+                this.route.params.subscribe(async params => {
                     this.enableMenu();
-                    this.getBooks();
+
+                    // console.error('getBooks onInit');
+                    await this.getBooks();
                 });
             }
         });
-        this.route.params.subscribe(params => {
+        this.route.params.subscribe(async params => {
             this.enableMenu();
-            this.getBooks();
+            // console.error('getBooks routeParamasChanged');
+            await this.getBooks();
         });
 
         let userDTO = this.appStorageService.getUserDTO();
@@ -78,7 +81,8 @@ export class ShelfPage implements OnInit {
                 }
             )
         } else {
-            this.getBooks();
+            await this.getBooks();
+            // console.error('getBooks onElse');
             this.enableMenu();
         }
         if (userDTO.favoritesBook != null) {
@@ -86,9 +90,9 @@ export class ShelfPage implements OnInit {
         }
     }
 
-    public ionViewWillEnter() {
-        console.error('ionViewWillEnter');
-        this.selectionChanged({detail: {value: this.showBooks}})
+    public async ionViewWillEnter() {
+        // console.error('ionViewWillEnter');
+        await this.selectionChanged({detail: {value: this.showBooks}})
     }
 
     public openBook(book: BookDTO) {
@@ -138,11 +142,11 @@ export class ShelfPage implements OnInit {
         }
     }
 
-    public selectionChanged(event) {
-        console.error(event);
+    public async selectionChanged(event) {
         this.showBooks = event.detail.value;
         if (this.showBooks == 0) {
-            this.getBooks();
+            // console.error('getBooks selectionsCHanged');
+            await this.getBooks();
             this.showFavorites = false;
             this.viewFreeBooks = false;
             this.showAuthors = false;
@@ -156,7 +160,7 @@ export class ShelfPage implements OnInit {
             this.viewFreeBooks = false;
             this.showAuthors = false;
             this.getSharedWithMeBooks();
-        } else if(this.showBooks == 3){
+        } else if (this.showBooks == 3) {
             this.showAuthors = true;
         }
     }
@@ -190,7 +194,7 @@ export class ShelfPage implements OnInit {
         }
         let books = await this.appStorageService.getBooks();
         if (books.length > 0) {
-            this.books = await this.appStorageService.getBooks();
+            this.books = books;
             this.filteredBooks = this.books;
             this.areSharedBooks = false;
             this.showAuthors = false;
@@ -199,7 +203,9 @@ export class ShelfPage implements OnInit {
         this.loadingService.showLoader();
         this.httpParseService.getBooksForUser().subscribe(
             (res: BookDTO[]) => {
+                console.error('doSubscribe');
                 this.books = res.sort((a, b) => a.fileName > b.fileName ? 1 : -1);
+                this.appStorageService.setBooks(this.books);
                 this.filteredBooks = this.books;
                 this.areSharedBooks = false;
                 this.showAuthors = false;

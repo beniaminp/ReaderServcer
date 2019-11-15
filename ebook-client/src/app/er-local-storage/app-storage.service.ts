@@ -4,6 +4,7 @@ import {LocalStorageService} from "angular-2-local-storage";
 import {ConnectionDTO} from "../models/ConnectionDTO";
 import {BookDTO} from "../ebook-reader/dto/BookDTO";
 import {Storage} from '@ionic/storage';
+import {NgxIndexedDBService} from "ngx-indexed-db";
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +12,8 @@ import {Storage} from '@ionic/storage';
 export class AppStorageService {
 
     constructor(private localStorageService: LocalStorageService,
-                private storage: Storage) {
+                /* private storage: Storage,*/
+                private indexedDBService: NgxIndexedDBService) {
     }
 
     public setToken(token: string) {
@@ -96,25 +98,36 @@ export class AppStorageService {
     }
 
     public setBooks(booksDTO: BookDTO[]) {
-        this.storage.set(STORAGE_DATA.BOOKS, booksDTO);
+        this.indexedDBService.currentStore = 'books';
+        this.indexedDBService.clear().then((res) => {
+            booksDTO.forEach(async bookDTO => {
+                await this.indexedDBService.add(bookDTO);
+            });
+        });
+        // this.storage.set(STORAGE_DATA.BOOKS, booksDTO);
     }
 
     public getBooks(): Promise<BookDTO[]> {
+        this.indexedDBService.currentStore = 'books';
         /* let books: BookDTO[] = this.localStorageService.get(STORAGE_DATA.BOOKS);
          return books != null ? books : [];*/
-        return this.storage.get(STORAGE_DATA.BOOKS);
+        return this.indexedDBService.getAll();
     }
 
     public async addBook(bookDTO: BookDTO) {
-        let books = await this.getBooks();
+        this.indexedDBService.currentStore = 'books';
+        await this.indexedDBService.add(bookDTO, bookDTO.objectId);
+        /*let books = await this.getBooks();
         books.push(bookDTO);
-        this.setBooks(books);
+        this.setBooks(books);*/
     }
 
     public async deleteBook(bookDTO: BookDTO) {
-        let booksStorage = await this.getBooks();
-        let books = booksStorage.splice(booksStorage.indexOf(bookDTO), 1);
-        this.setBooks(books);
+        this.indexedDBService.currentStore = 'books';
+        this.indexedDBService.deleteRecord(bookDTO.objectId);
+        /* let booksStorage = await this.getBooks();
+         let books = booksStorage.splice(booksStorage.indexOf(bookDTO), 1);
+         this.setBooks(books);*/
     }
 
     public updateBook(bookDTO: BookDTO) {

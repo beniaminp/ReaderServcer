@@ -23,6 +23,26 @@ import {ErLocalStorageModule} from "./er-local-storage/er-local-storage.module";
 import {TokenInterceptorService} from "./services/token-interceptor.service";
 import {RequestCache} from "./services/cache/request-cache";
 import {CachingInterceptor} from "./services/cache/caching-interceptor";
+import {DBConfig, NgxIndexedDBModule} from "ngx-indexed-db";
+
+const dbConfig: DBConfig = {
+    name: 'SublimeReader', version: 1, objectStoresMeta: [
+        {
+            store: 'books',
+            storeConfig: {keyPath: 'objectId', autoIncrement: false},
+            storeSchema: [
+                {name: 'title', keypath: 'title', options: {unique: false}},
+                {name: 'fileUrl', keypath: 'fileUrl', options: {unique: false}},
+                {name: 'userId', keypath: 'userId', options: {unique: false}},
+                {name: 'fileId', keypath: 'fileId', options: {unique: false}},
+                {name: 'fileName', keypath: 'fileName', options: {unique: false}},
+                {name: 'bookContent', keypath: 'bookContent', options: {unique: false}},
+                {name: 'fileUrlName', keypath: 'fileUrlName', options: {unique: false}},
+                {name: 'lastReadCfi', keypath: 'lastReadCfi', options: {unique: false}}
+            ]
+        }
+    ]
+};
 
 @NgModule({
     declarations: [AppComponent, BookmarksListComponent],
@@ -31,15 +51,13 @@ import {CachingInterceptor} from "./services/cache/caching-interceptor";
         BrowserModule,
         IonicModule.forRoot(),
         AppRoutingModule,
-        IonicStorageModule.forRoot({
-            name: 'ebook_db',
-            driverOrder: ['indexeddb', 'sqlite', 'websql']
-        }),
+        IonicStorageModule.forRoot(),
         EbookReaderModule,
         ShelfPageModule,
         HttpClientModule,
         ServiceWorkerModule.register('ngsw-worker.js', {enabled: true}),
         ErLocalStorageModule,
+        NgxIndexedDBModule.forRoot(dbConfig)
     ],
     providers: [
         StatusBar,
