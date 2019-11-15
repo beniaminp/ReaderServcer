@@ -1,5 +1,5 @@
 echo 'stop server'
-./stop.sh
+/home/beniaminp/sublime/stop.sh
 echo 'create old versions dir'
 mkdir -p /home/beniaminp/sublime/old_versions
 echo 'move current app to old version dir'
@@ -9,4 +9,4 @@ cp target/ebook-0.0.1-SNAPSHOT.jar /home/beniaminp/sublime/
 echo 'cd to sublime folder'
 cd /home/beniaminp/sublime/
 echo 'start server'
-sudo ./start.sh
+sudo /home/beniaminp/sublime/start.sh

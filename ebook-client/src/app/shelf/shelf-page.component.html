@@ -22,16 +22,22 @@
     </ion-refresher>
     <ion-searchbar animated showCancelButton="never" autocomplete="true" (ionInput)="searchInputChanged($event)"
                    (ionChange)="searchChanged($event)"></ion-searchbar>
-    <ion-list *ngIf="filteredBooks && !areSharedBooks">
-        <ion-item *ngFor="let book of filteredBooks">
-            <!--<ion-avatar slot="start">
-                <img src="./avatar-finn.png">
+
+    <ion-virtual-scroll [items]="filteredBooks" *ngIf="filteredBooks && !areSharedBooks">
+        <ion-item *virtualItem="let book">
             </ion-avatar>-->
+                <ion-label (click)="openBook(book)">{{book.fileName}}</ion-label>
+                <ion-icon name="menu" (click)="showBookPopover($event, book)"></ion-icon>
+        </ion-item>
+    </ion-virtual-scroll>
+
+<!--    <ion-list *ngIf="filteredBooks && !areSharedBooks">
+        <ion-item *ngFor="let book of filteredBooks">
             <ion-label (click)="openBook(book)">{{book.fileName}}</ion-label>
             <ion-icon name="menu" (click)="showBookPopover($event, book)"></ion-icon>
         </ion-item>
     </ion-list>
-
+-->
     <ion-list *ngIf="areSharedBooks">
         <ion-item *ngFor="let sharedBook of sharedBooks">
             <!--<ion-avatar slot="start">
