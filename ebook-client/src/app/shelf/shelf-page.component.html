@@ -25,7 +25,6 @@
 
     <ion-virtual-scroll [items]="filteredBooks" *ngIf="filteredBooks && !areSharedBooks">
         <ion-item *virtualItem="let book">
-            </ion-avatar>-->
                 <ion-label (click)="openBook(book)">{{book.fileName}}</ion-label>
                 <ion-icon name="menu" (click)="showBookPopover($event, book)"></ion-icon>
         </ion-item>
