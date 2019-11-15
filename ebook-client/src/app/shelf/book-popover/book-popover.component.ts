@@ -49,6 +49,7 @@ export class BookPopoverComponent implements OnInit {
             this.favoritesBooks.push(this.bookDTO.objectId);
         }
         this.userDTO.favoritesBook = this.favoritesBooks.join(",");
+        this.appStorageService.setUser(this.userDTO);
 
         this.httpParseService.updateFavoritesBooks(this.favoritesBooks, this.userDTO).subscribe(
             (res) => {
