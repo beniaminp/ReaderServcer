@@ -1,0 +1,6 @@
+google:
+    - clientId: 812404189923-jbs50fup107t32rc1vbpbb4qr2fj9pd6.apps.googleusercontent.com
+    - privateKey: AurOUMqB_yvy4el1hyzYnRTX
+
+
+https://dzone.com/articles/login-with-facebook-and-google-using-angular-8
