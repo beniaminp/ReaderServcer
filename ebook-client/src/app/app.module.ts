@@ -25,6 +25,7 @@ import {RequestCache} from "./services/cache/request-cache";
 import {CachingInterceptor} from "./services/cache/caching-interceptor";
 import {DBConfig, NgxIndexedDBModule} from "ngx-indexed-db";
 import {AuthService, AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider} from "angular-6-social-login";
+import {SocialModule} from "./social/social.module";
 
 
 export function socialConfigs() {
@@ -75,7 +76,8 @@ const dbConfig: DBConfig = {
         HttpClientModule,
         ServiceWorkerModule.register('ngsw-worker.js', {enabled: true}),
         ErLocalStorageModule,
-        NgxIndexedDBModule.forRoot(dbConfig)
+        NgxIndexedDBModule.forRoot(dbConfig),
+        SocialModule
     ],
     providers: [
         StatusBar,

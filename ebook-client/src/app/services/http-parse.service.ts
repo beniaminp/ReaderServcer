@@ -7,6 +7,7 @@ import {AppStorageService} from "../er-local-storage/app-storage.service";
 import {BookmarkDTO} from "../ebook-reader/dto/BookmarkDTO";
 import {ConnectionDTO} from "../models/ConnectionDTO";
 import {AppSettings} from "../app-settings";
+import {JwtModel} from "../models/JwtModel";
 
 @Injectable({
     providedIn: 'root'
@@ -22,27 +23,14 @@ export class HttpParseService {
     }
 
     public loginUser(userDTO: UserDTO) {
-        var subject = new Subject<UserDTO>();
 
-        this.httpClient.post(this.parseURL + RestControllers.AUTH + '/authenticate', {
+        return this.httpClient.post(this.parseURL + RestControllers.AUTH + '/authenticate', {
             username: userDTO.email,
             password: userDTO.password
-        }).subscribe(
-            async (res: any) => {
-                await this.appStorageService.setToken(res.token);
-                this.httpClient.get(this.parseURL + RestControllers.USER + '/getUser', this.createHttpOptions()).subscribe(
-                    (userDTO: UserDTO) => {
-                        subject.next(userDTO);
-                    }
-                )
-            }
-        );
-
-        return subject.asObservable();
+        });
     }
 
     public socialAuthenticate(socialMethod: number, userDTO: any) {
-        var subject = new Subject<UserDTO>();
 
         let user: UserDTO = new UserDTO();
         user.username = userDTO.email;
@@ -50,21 +38,10 @@ export class HttpParseService {
         user.email = userDTO.email;
         user.googleId = userDTO.id;
 
-        this.httpClient.post(this.parseURL + RestControllers.AUTH + '/socialAuthenticate/' + socialMethod, user).subscribe(
-            (res: any) => {
-                this.appStorageService.setToken(res.token);
-                this.httpClient.get(this.parseURL + RestControllers.USER + '/getUser').subscribe(
-                    (userDTO: UserDTO) => {
-                        subject.next(userDTO);
-                    }
-                )
-            }
-        );
-        return subject.asObservable();
+        return this.httpClient.post(this.parseURL + RestControllers.AUTH + '/socialAuthenticate/' + socialMethod, user);
     }
 
     public signUpUser(userDTO: UserDTO) {
-        var subject = new Subject<UserDTO>();
 
         let user: any = {};
         user.username = userDTO.email;
@@ -72,17 +49,7 @@ export class HttpParseService {
         user.email = userDTO.email;
         user.password = userDTO.password;
 
-        this.httpClient.post(this.parseURL + RestControllers.AUTH + '/signup', user).subscribe(
-            (res: any) => {
-                this.appStorageService.setToken(res.token);
-                this.httpClient.get(this.parseURL + RestControllers.USER + '/getUser').subscribe(
-                    (userDTO: UserDTO) => {
-                        subject.next(userDTO);
-                    }
-                )
-            }
-        );
-        return subject.asObservable();
+        return this.httpClient.post(this.parseURL + RestControllers.AUTH + '/signup', user);
     }
 
     // start books
@@ -351,7 +318,7 @@ export class HttpParseService {
             )
         }*/
 
-        if (await this.appStorageService.getBooks() == null) {
+        /*if (await this.appStorageService.getBooks() == null) {
             this.getBooksForUser().subscribe(
                 async (books: BookDTO[]) => {
                     await this.appStorageService.setBooks(books);
@@ -370,7 +337,7 @@ export class HttpParseService {
                     }
                 }
             )
-        }
+        }*/
     }
 }
 

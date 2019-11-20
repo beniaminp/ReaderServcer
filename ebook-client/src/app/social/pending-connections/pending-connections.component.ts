@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ConnectionDTO} from "../../models/ConnectionDTO";
 import {HttpParseService} from "../../services/http-parse.service";
 import {UserDTO} from "../../models/UserDTO";
-import {ModalController} from "@ionic/angular";
+import {ModalController, NavParams} from "@ionic/angular";
 
 @Component({
     selector: 'app-pending-connections',
@@ -15,11 +15,17 @@ export class PendingConnectionsComponent implements OnInit {
     public isOkToRender = false;
 
     constructor(public httpParseService: HttpParseService,
-                public modalController: ModalController) {
+                public modalController: ModalController,
+                private navParams: NavParams) {
     }
 
     ngOnInit() {
-        this.refreshPendingConnections();
+        // this.refreshPendingConnections();
+        this.receivedConnections = this.navParams.get("receivedConnections");
+        this.usersMap = this.navParams.get("usersMap");
+        if (this.receivedConnections != null && this.usersMap != null) {
+            this.isOkToRender = true;
+        }
     }
 
     private refreshPendingConnections() {

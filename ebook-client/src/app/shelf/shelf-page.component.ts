@@ -1,7 +1,7 @@
-import {AfterContentInit, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
 import {Storage} from "@ionic/storage";
-import {LoadingController, MenuController, Platform, PopoverController} from "@ionic/angular";
+import {MenuController, Platform, PopoverController} from "@ionic/angular";
 import {MenuEvents, MenuService} from "../ebook-reader/services/menu.service";
 import {BookDTO} from "../ebook-reader/dto/BookDTO";
 import {HttpParseService} from "../services/http-parse.service";
@@ -10,7 +10,6 @@ import {UserDTO} from "../models/UserDTO";
 import {UserSettingsComponent} from "./user-settings/user-settings.component";
 import {LoadingService} from "../services/loading.service";
 import {BookPopoverComponent} from "./book-popover/book-popover.component";
-import {GenericHttpService} from "../services/generic-http.service";
 import {SharedBookDTO} from "../ebook-reader/dto/SharedBookDTO";
 
 declare var ePub: any;
@@ -52,22 +51,22 @@ export class ShelfPage implements OnInit {
         this.initEventListeners();
     }
 
-    async ngOnInit() {
-        this.routeSub = this.router.events.subscribe(async (event) => {
+    ngOnInit() {
+        this.routeSub = this.router.events.subscribe((event) => {
             if (event instanceof NavigationStart) {
                 this.clearAll();
                 this.route.params.subscribe(async params => {
                     this.enableMenu();
 
                     // console.error('getBooks onInit');
-                    await this.getBooks();
+                    this.getBooks();
                 });
             }
         });
-        this.route.params.subscribe(async params => {
+        this.route.params.subscribe(params => {
             this.enableMenu();
             // console.error('getBooks routeParamasChanged');
-            await this.getBooks();
+            this.getBooks();
         });
 
         let userDTO = this.appStorageService.getUserDTO();
@@ -81,7 +80,7 @@ export class ShelfPage implements OnInit {
                 }
             )
         } else {
-            await this.getBooks();
+            this.getBooks();
             // console.error('getBooks onElse');
             this.enableMenu();
         }
@@ -185,27 +184,26 @@ export class ShelfPage implements OnInit {
         this.menuCtrl.enable(true, 'my-books-menu');
     }
 
-    private async getBooks() {
+    private getBooks() {
         if (this.books != null && this.books.length > 1) {
             this.filteredBooks = this.books;
             this.areSharedBooks = false;
             this.showAuthors = false;
             return;
         }
-        let books = await this.appStorageService.getBooks();
-        if (books.length > 0) {
-            this.books = books;
-            this.filteredBooks = this.books;
-            this.areSharedBooks = false;
-            this.showAuthors = false;
-            return;
-        }
+        /* let books = await this.appStorageService.getBooks();
+         if (books.length > 0) {
+             this.books = books;
+             this.filteredBooks = this.books;
+             this.areSharedBooks = false;
+             this.showAuthors = false;
+             return;
+         }*/
         this.loadingService.showLoader();
         this.httpParseService.getBooksForUser().subscribe(
             (res: BookDTO[]) => {
-                console.error('doSubscribe');
                 this.books = res.sort((a, b) => a.fileName > b.fileName ? 1 : -1);
-                this.appStorageService.setBooks(this.books);
+                // this.appStorageService.setBooks(this.books);
                 this.filteredBooks = this.books;
                 this.areSharedBooks = false;
                 this.showAuthors = false;
@@ -220,7 +218,23 @@ export class ShelfPage implements OnInit {
 
     private getSharedWithMeBooks() {
         this.loadingService.showLoader();
-        this.connectionMap = new Map(this.appStorageService.getUserConnections().map(user => [user.objectId, user]));
+        this.httpParseService.getMyConnectedUsers().subscribe(
+            (usersDTOs: UserDTO[]) => {
+                this.connectionMap = new Map(usersDTOs.map(user => [user.objectId, user]));
+                this.httpParseService.getSharedWithMeBooks().subscribe(
+                    (res: SharedBookDTO[]) => {
+                        this.loadingService.dismissLoader();
+                        this.sharedBooks = res.sort((a, b) => a.bookDTO.fileName > b.bookDTO.fileName ? 1 : -1);
+                        this.areSharedBooks = true;
+                        this.showAuthors = false;
+                    }, (e) => {
+                        console.error(e);
+                        this.loadingService.dismissLoader();
+                    }
+                );
+            }
+        );
+        /*this.connectionMap = new Map(this.appStorageService.getUserConnections().map(user => [user.objectId, user]));
         this.httpParseService.getSharedWithMeBooks().subscribe(
             (res: SharedBookDTO[]) => {
                 this.loadingService.dismissLoader();
@@ -231,7 +245,7 @@ export class ShelfPage implements OnInit {
                 console.error(e);
                 this.loadingService.dismissLoader();
             }
-        );
+        );*/
     }
 
     public clearAll() {

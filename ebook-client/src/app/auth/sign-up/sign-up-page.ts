@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {HttpParseService} from "../../services/http-parse.service";
 import {AppStorageService} from "../../er-local-storage/app-storage.service";
 import {LoadingService} from "../../services/loading.service";
+import {JwtModel} from "../../models/JwtModel";
 
 @Component({
     selector: 'app-sign-up',
@@ -30,12 +31,10 @@ export class SignUpPage implements OnInit {
         userDTO.password = form.controls.password.value;
 
         this.httpParseService.signUpUser(userDTO).subscribe(
-            (res: any) => {
-                userDTO.sessionToken = res.sessionToken;
-                userDTO.objectId = res.objectId;
-                userDTO.lastReadBook = res.lastReadBook;
-                this.appStorageService.setUserDTO(userDTO);
-
+            (res: JwtModel) => {
+                this.appStorageService.setToken(res.jwttoken);
+                this.appStorageService.setUserDTO(res.userDTO);
+                this.httpParseService.initApp();
 
                 this.loadingService.dismissLoader();
                 this.goToShelf();

@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 public class SchedulerTaks {
     private static final Logger log = LoggerFactory.getLogger(SchedulerTaks.class);
 
-
     @Autowired
     private MongoTemplate mongoTemplate;
 

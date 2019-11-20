@@ -1,14 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {AlertController, MenuController, ModalController} from "@ionic/angular";
+import {AlertController, ModalController} from "@ionic/angular";
 import {Storage} from "@ionic/storage";
 import {BookDTO} from "../../ebook-reader/dto/BookDTO";
-import {MenuEvents, MenuService} from "../../ebook-reader/services/menu.service";
 import {HttpParseService} from "../../services/http-parse.service";
-import {BookmarksListComponent} from "../../ebook-reader/ebook-menu/bookmarks-list/bookmarks-list.component";
 import {PeopleComponent} from "../../social/people/people.component";
 import {PendingConnectionsComponent} from "../../social/pending-connections/pending-connections.component";
 import {UploadService} from "../../services/upload.service";
 import {MyConnectionsComponent} from "../../social/my-connections/my-connections.component";
+import {UserDTO} from "../../models/UserDTO";
 
 declare var ePub: any;
 
@@ -86,14 +85,31 @@ export class MyBooksMenuComponent implements OnInit {
 
     public async openPendingInvites() {
         try {
-            const modal = await this.modalController.create({
-                component: PendingConnectionsComponent,
-                componentProps: {},
-                showBackdrop: true,
-                backdropDismiss: true
-            });
-            modal.present();
-            const {data} = await modal.onWillDismiss();
+            this.httpParseService.getReceivedConnections().subscribe(
+                (connections: any) => {
+                    let receivedConnections = connections == null ? [] : connections;
+                    let usersIdArray = [];
+
+                    receivedConnections.forEach(connection => {
+                        usersIdArray.push(connection.firstUserId);
+                    });
+                    let usersMap: Map<string, UserDTO> = new Map();
+                    this.httpParseService.getUsersByIds(usersIdArray).subscribe(
+                        async (usersDTO: UserDTO[]) => {
+                            usersDTO.forEach(userDTO => usersMap.set(userDTO.objectId, userDTO));
+
+                            const modal = await this.modalController.create({
+                                component: PendingConnectionsComponent,
+                                componentProps: {'receivedConnections': receivedConnections, 'usersMap': usersMap},
+                                showBackdrop: true,
+                                backdropDismiss: true
+                            });
+                            modal.present();
+                            const {data} = await modal.onWillDismiss();
+                        }
+                    ), e1 => console.error(e1)
+                }, e => console.error(e)
+            )
         } catch (e) {
             console.error(e);
         }
@@ -101,14 +117,19 @@ export class MyBooksMenuComponent implements OnInit {
 
     public async openMyConnections() {
         try {
-            const modal = await this.modalController.create({
-                component: MyConnectionsComponent,
-                componentProps: {},
-                showBackdrop: true,
-                backdropDismiss: true
-            });
-            modal.present();
-            const {data} = await modal.onWillDismiss();
+            this.httpParseService.getMyConnectedUsers().subscribe(
+                async (conns: UserDTO[]) => {
+                    let connections = conns;
+                    const modal = await this.modalController.create({
+                        component: MyConnectionsComponent,
+                        componentProps: {'myConnections': connections},
+                        showBackdrop: true,
+                        backdropDismiss: true
+                    });
+                    modal.present();
+                    const {data} = await modal.onWillDismiss();
+                }
+            );
         } catch (e) {
             console.error(e);
         }

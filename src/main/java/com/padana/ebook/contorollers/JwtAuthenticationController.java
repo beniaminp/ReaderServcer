@@ -40,7 +40,11 @@ public class JwtAuthenticationController {
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
+        Query query = new Query();
+        query.addCriteria(Criteria.where("email").is(authenticationRequest.getUsername()).and("password").is(authenticationRequest.getPassword()));
+        UserDTO userDTO = mongoTemplate.findOne(query, UserDTO.class);
+
+        return ResponseEntity.ok(new JwtResponse(token, userDTO));
     }
 
     @PostMapping("/socialAuthenticate/{socialMethod}")
@@ -56,7 +60,7 @@ public class JwtAuthenticationController {
                 final UserDetails userDetails = userDetailsService
                         .loadUserByUsername(userDTO.getUsername());
                 final String token = jwtTokenUtil.generateToken(userDetails);
-                return ResponseEntity.ok(new JwtResponse(token));
+                return ResponseEntity.ok(new JwtResponse(token, foundUser));
             } else {
                 query = new Query();
                 query.addCriteria(Criteria.where("email").is(userDTO.email));
@@ -69,7 +73,7 @@ public class JwtAuthenticationController {
                     final UserDetails userDetails = userDetailsService
                             .loadUserByUsername(userDTO.getUsername());
                     final String token = jwtTokenUtil.generateToken(userDetails);
-                    return ResponseEntity.ok(new JwtResponse(token));
+                    return ResponseEntity.ok(new JwtResponse(token, userDTO));
                 }
             }
         }
@@ -78,18 +82,18 @@ public class JwtAuthenticationController {
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(userDTO.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok(new JwtResponse(token, userDTO));
     }
 
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody UserDTO userDTO) throws Exception {
-        mongoTemplate.insert(userDTO);
+        userDTO = mongoTemplate.insert(userDTO);
         authenticate(userDTO.getUsername(), userDTO.getPassword());
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(userDTO.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok(new JwtResponse(token, userDTO));
     }
 
     private void authenticate(String username, String password) throws Exception {
