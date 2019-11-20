@@ -26,6 +26,8 @@ public class UserDTO implements UserDetails {
     public Boolean isItalic;
     public Boolean showNavigationControl;
     public String theme;
+    public String googleId;
+    public String facebookId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

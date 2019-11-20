@@ -31,13 +31,7 @@ export class LoginComponent implements OnInit {
         userDTO.password = form.controls.password.value;
         this.httpParseService.loginUser(userDTO).subscribe(
             async (res: any) => {
-                userDTO = res;
-                this.appStorageService.setUserDTO(userDTO);
-                await this.httpParseService.initApp();
-
-                this.loadingService.dismissLoader();
-                this.goToShelf();
-
+                await this.doLoginAndGoToShelf(res);
             }, (e) => {
                 this.loadingService.dismissLoader();
                 console.error(e);
@@ -47,15 +41,10 @@ export class LoginComponent implements OnInit {
 
     public googleLogin() {
         this.OAuth.signIn(GoogleLoginProvider.PROVIDER_ID).then(socialusers => {
-            console.log(socialusers);
-            this.httpParseService.socialAuthenticate(socialusers).subscribe(
-                async (res: any) => {
-                    let userDTO = res;
-                    this.appStorageService.setUserDTO(userDTO);
-                    await this.httpParseService.initApp();
-
-                    this.loadingService.dismissLoader();
-                    this.goToShelf();
+            console.error(socialusers);
+            this.httpParseService.socialAuthenticate(1, socialusers).subscribe(
+                async (res: UserDTO) => {
+                    await this.doLoginAndGoToShelf(res);
 
                 }, (e) => {
                     this.loadingService.dismissLoader();
@@ -65,11 +54,20 @@ export class LoginComponent implements OnInit {
         });
     }
 
+    public async doLoginAndGoToShelf(res: UserDTO) {
+        let userDTO = res;
+        this.appStorageService.setUserDTO(userDTO);
+        await this.httpParseService.initApp();
+
+        this.goToShelf();
+    }
+
     public goToRegister() {
         this.router.navigate(['auth/sign-up']);
     }
 
     public goToShelf() {
+        this.loadingService.dismissLoader();
         this.router.navigate(['shelf']);
     }
 }

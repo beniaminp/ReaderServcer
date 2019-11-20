@@ -41,16 +41,16 @@ export class HttpParseService {
         return subject.asObservable();
     }
 
-    public socialAuthenticate(userDTO: any) {
+    public socialAuthenticate(socialMethod: number, userDTO: any) {
         var subject = new Subject<UserDTO>();
 
-        let user: any = {};
+        let user: UserDTO = new UserDTO();
         user.username = userDTO.email;
-        user.name = userDTO.name;
+        user.username = userDTO.name;
         user.email = userDTO.email;
-        user.password = userDTO.id;
+        user.googleId = userDTO.id;
 
-        this.httpClient.post(this.parseURL + RestControllers.AUTH + '/socialAuthenticate', user).subscribe(
+        this.httpClient.post(this.parseURL + RestControllers.AUTH + '/socialAuthenticate/' + socialMethod, user).subscribe(
             (res: any) => {
                 this.appStorageService.setToken(res.token);
                 this.httpClient.get(this.parseURL + RestControllers.USER + '/getUser').subscribe(
@@ -323,15 +323,15 @@ export class HttpParseService {
     }
 
     public async initApp() {
-        if (this.appStorageService.getConnections() == null) {
+        /*if (this.appStorageService.getConnections() == null) {
             this.getMyConnections().subscribe(
                 (res: any) => {
                     this.appStorageService.setConnections(res as ConnectionDTO[]);
                 }
             );
-        }
+        }*/
 
-        if (this.appStorageService.getUserConnections() == null) {
+        /*if (this.appStorageService.getUserConnections() == null) {
             this.getMyConnectedUsers().subscribe(
                 (res: any) => {
                     this.appStorageService.setUserConnections(res as UserDTO[]);
@@ -349,7 +349,7 @@ export class HttpParseService {
                     }
                 }
             )
-        }
+        }*/
 
         if (await this.appStorageService.getBooks() == null) {
             this.getBooksForUser().subscribe(

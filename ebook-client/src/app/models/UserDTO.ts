@@ -14,4 +14,6 @@ export class UserDTO {
     isItalic: boolean;
     showNavigationControl: boolean;
     theme: string;
+    googleId: string;
+    facebookId: string;
 }
