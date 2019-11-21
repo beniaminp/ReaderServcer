@@ -76,14 +76,17 @@ export class BookPopoverComponent implements OnInit {
 
     public async shareBook() {
         try {
-            const modal = await this.modalController.create({
-                component: ShareBookComponent,
-                componentProps: {'bookDTO': this.bookDTO},
-                showBackdrop: true,
-                backdropDismiss: true
-            });
-            this.popoverController.dismiss();
-            modal.present();
+            this.httpParseService.getMyConnectedUsers().subscribe(
+                async (conns: UserDTO[]) => {
+                    const modal = await this.modalController.create({
+                        component: ShareBookComponent,
+                        componentProps: {'bookDTO': this.bookDTO, 'myConnections': conns},
+                        showBackdrop: true,
+                        backdropDismiss: true
+                    });
+                    this.popoverController.dismiss();
+                    modal.present();
+                });
         } catch (e) {
             console.error(e);
         }

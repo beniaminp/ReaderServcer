@@ -25,7 +25,7 @@ public class SchedulerTaks {
         sharedBooksDTOList.parallelStream().forEach(sharedBooksDTO -> {
             long daysToShareMillis = TimeUnit.MILLISECONDS.convert(Long.parseLong(sharedBooksDTO.daysToShare), TimeUnit.DAYS);
             if (sharedBooksDTO.startDate != null) {
-                if (daysToShareMillis + sharedBooksDTO.startDate > System.currentTimeMillis()) {
+                if (daysToShareMillis + sharedBooksDTO.startDate < System.currentTimeMillis()) {
                     mongoTemplate.remove(sharedBooksDTO);
                 }
             }

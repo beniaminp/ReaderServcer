@@ -13,20 +13,20 @@ export class LoadingService {
     }
 
     public async showLoader() {
-        if (!this.isLoaderPresent) {
+       /* if (!this.isLoaderPresent) {
             this.isLoaderPresent = true;
             this.loading = await this.loadingController.create();
             this.loading.present();
-        }
+        }*/
     }
 
     public dismissLoader() {
-        while (this.loading == null) {
+        /*while (this.loading == null) {
             setTimeout(() => {
 
             }, 200)
         }
         this.loading.dismiss();
-        this.isLoaderPresent = false;
+        this.isLoaderPresent = false;*/
     }
 }

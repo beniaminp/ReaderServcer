@@ -25,8 +25,10 @@ export class ShareBookComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.connections = this.appStorageService.getUserConnections();
+        this.connections = this.navParams.get('myConnections');
         this.isOkToRender = true;
+        /*this.connections = this.appStorageService.getUserConnections();
+        this.isOkToRender = true;*/
     }
 
     public dismissModal() {
