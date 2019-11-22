@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @RestController
 @RequestMapping("user-controller")
 public class UserController {
@@ -155,7 +157,7 @@ public class UserController {
     private List<UserDTO> getMyConnectedUsers() {
         List<ConnectionDTO> connectionDTOS = getUserConnections();
 
-        List<String> usersIds = getConnectedUserIds(connectionDTOS);
+        List<String> usersIds = getConnectedUserIds(connectionDTOS).stream().filter(s -> !s.equals(JwtPrincipal.getUserId())).collect(toList());
 
         Criteria userCriteria = Criteria.where("objectId").in(usersIds);
         Query query = new Query();
@@ -164,8 +166,8 @@ public class UserController {
     }
 
     private List<String> getConnectedUserIds(List<ConnectionDTO> connectionDTOS) {
-        List<String> usersIds = connectionDTOS.stream().filter(connectionDTO -> connectionDTO.firstUserId != JwtPrincipal.getUserId()).map(connectionDTO -> connectionDTO.firstUserId).collect(Collectors.toList());
-        usersIds.addAll(connectionDTOS.stream().filter(connectionDTO -> connectionDTO.secondUserId != JwtPrincipal.getUserId()).map(connectionDTO -> connectionDTO.secondUserId).collect(Collectors.toList()));
+        List<String> usersIds = connectionDTOS.stream().filter(connectionDTO -> connectionDTO.firstUserId != JwtPrincipal.getUserId()).map(connectionDTO -> connectionDTO.firstUserId).collect(toList());
+        usersIds.addAll(connectionDTOS.stream().filter(connectionDTO -> connectionDTO.secondUserId != JwtPrincipal.getUserId()).map(connectionDTO -> connectionDTO.secondUserId).collect(toList()));
         return usersIds;
     }
 

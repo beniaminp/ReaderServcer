@@ -22,7 +22,12 @@ public class JwtAuthenticationManager implements AuthenticationManager {
         query.addCriteria(Criteria.where("email").is(authentication.getPrincipal()).and("password").is(authentication.getCredentials()));
         UserDTO userDTO = mongoTemplate.findOne(query, UserDTO.class);
         if (userDTO == null) {
-            throw new AuthenticationCredentialsNotFoundException("User does not exists");
+            query = new Query();
+            query.addCriteria(Criteria.where("email").is(authentication.getPrincipal()).and("googleId").is(authentication.getCredentials()));
+            userDTO = mongoTemplate.findOne(query, UserDTO.class);
+            if (userDTO == null) {
+                throw new AuthenticationCredentialsNotFoundException("User does not exists");
+            }
         }
         return authentication;
     }
