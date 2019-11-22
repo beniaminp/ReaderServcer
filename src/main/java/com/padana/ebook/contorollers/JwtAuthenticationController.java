@@ -56,9 +56,9 @@ public class JwtAuthenticationController {
             query.addCriteria(Criteria.where("googleId").is(userDTO.googleId));
             UserDTO foundUser = mongoTemplate.findOne(query, UserDTO.class);
             if (foundUser != null) {
-                authenticate(userDTO.getUsername(), userDTO.getPassword());
+                authenticate(foundUser.getUsername(), foundUser.googleId);
                 final UserDetails userDetails = userDetailsService
-                        .loadUserByUsername(userDTO.getUsername());
+                        .loadUserByUsername(foundUser.getUsername());
                 final String token = jwtTokenUtil.generateToken(userDetails);
                 return ResponseEntity.ok(new JwtResponse(token, foundUser));
             } else {
