@@ -260,6 +260,11 @@ export class ShelfPage implements OnInit {
         this.sharedBooks = [];
     }
 
+    /*public getRemainingDaysToShare(sharedBookDTO: SharedBookDTO) {
+        let currentTime = new Date().getTime();
+        let timeInMillis = sharedBookDTO.startDate + ()
+    }*/
+
     private initEventListeners() {
         this.menuService.menuEmitter.subscribe(
             async (res) => {

@@ -48,6 +48,7 @@ public class ConnectionController {
     @PutMapping(value = "acceptConnection/{connectionId}")
     public void acceptConnection(@PathVariable String connectionId) {
         Query query = new Query();
+        query.addCriteria(Criteria.where("objectId").is(connectionId));
         Update update = new Update();
         update.set("secondUserAccepted", true);
         mongoTemplate.updateFirst(query, update, ConnectionDTO.class);

@@ -35,9 +35,9 @@ export class TokenInterceptorService implements HttpInterceptor {
             }
         }, (err: any) => {
             if (err instanceof HttpErrorResponse) {
-                if (err.status === 401) {
+                if (err.status === 401 || err.status === 500) {
                     this.appStorageService.clearUser();
-                    window.location.pathname = '/auth/login';
+                    window.location.pathname = '/';
                 }
             }
         }));
